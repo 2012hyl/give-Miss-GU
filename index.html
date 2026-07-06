@@ -70,62 +70,65 @@
         .note {
             position: absolute;
             background: #fff;
-            padding: 4px 8px;
-            font-size: 11px;
-            color: #555;
-            box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
-            border-radius: 14px;
+            padding: 7px 14px;
+            font-size: 14px;
+            color: #444;
+            box-shadow: 2px 4px 12px rgba(0,0,0,0.08);
+            border-radius: 20px;
             opacity: 0;
             white-space: nowrap;
-            border-bottom: 2px solid #ffeff2;
+            border-bottom: 3px solid #ffeff2;
             transition: all 1.8s cubic-bezier(0.25, 1, 0.5, 1);
             cursor: pointer;
             touch-action: manipulation;
             z-index: 2;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            min-width: 36px;
-            min-height: 36px;
+            min-width: 48px;
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 500;
         }
         .note.is-heart {
             background: #ff4d79 !important;
             color: white !important;
             border-bottom-color: #d6335c !important;
-            font-size: 14px !important;
-            padding: 6px 8px !important;
+            font-size: 20px !important;
+            padding: 10px 12px !important;
             border-radius: 50% !important;
-            box-shadow: 0 0 10px rgba(255, 77, 121, 0.55) !important;
-            transform: scale(1.1) !important;
-            min-width: 36px;
-            min-height: 36px;
+            box-shadow: 0 0 16px rgba(255, 77, 121, 0.6) !important;
+            transform: scale(1.2) !important;
+            min-width: 44px;
+            min-height: 44px;
         }
+        /* ✅ 中心卡片缩小 */
         .center-card {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 16px 22px;
+            padding: 12px 18px;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             text-align: center;
             z-index: 5;
             opacity: 0;
             animation: popIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 5.5s forwards;
-            max-width: 75%;
+            max-width: 65%;
             pointer-events: none;
+            margin: 0;
         }
         .center-card h2 {
             margin: 0;
             color: #ff4d79;
-            font-size: clamp(0.95rem, 4.5vw, 1.4rem);
+            font-size: clamp(0.9rem, 4vw, 1.3rem);
             line-height: 1.3;
         }
         .center-card p {
-            margin: 5px 0 0;
+            margin: 4px 0 0;
             color: #666;
             font-size: clamp(0.75rem, 3vw, 0.9rem);
         }
@@ -134,77 +137,69 @@
             80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
-
-        /* 左下角按钮组 */
         .bottom-left-group {
             position: fixed;
-            bottom: 12px;
-            left: 12px;
+            bottom: 14px;
+            left: 14px;
             display: flex;
-            gap: 6px;
+            gap: 8px;
             z-index: 999;
             align-items: center;
         }
         .hyl-badge {
-            font-size: 18px;
+            font-size: 20px;
             color: #ccc;
             cursor: pointer;
             user-select: none;
-            padding: 5px 8px;
+            padding: 6px 10px;
             line-height: 1;
             transition: all 0.3s ease;
             touch-action: manipulation;
             background: rgba(255,255,255,0.5);
-            border-radius: 16px;
+            border-radius: 20px;
             backdrop-filter: blur(4px);
             -webkit-tap-highlight-color: transparent;
-            min-width: 34px;
-            min-height: 34px;
+            min-width: 38px;
+            min-height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.04);
         }
         .hyl-badge.tip-show {
-            font-size: 12px;
+            font-size: 13px;
             color: #777;
             background: rgba(255,255,255,0.85);
             white-space: nowrap;
-            padding: 5px 14px;
+            padding: 6px 16px;
         }
-
-        /* 右下角小彩蛋 */
         .easter-egg-btn {
-            position: fixed;
-            bottom: 14px;
-            right: 14px;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: #ff4d79;
             border: none;
             cursor: pointer;
-            z-index: 1000;
             opacity: 0;
             transition: opacity 0.8s ease, transform 0.2s ease;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 1px 6px rgba(255, 77, 121, 0.25);
+            box-shadow: 0 2px 8px rgba(255, 77, 121, 0.3);
             animation: subtlePulse 2.5s ease-in-out infinite;
+            padding: 0;
+            flex-shrink: 0;
         }
         .easter-egg-btn.visible {
-            opacity: 0.55;
+            opacity: 0.6;
         }
         .easter-egg-btn:active {
             transform: scale(1.4);
             opacity: 1;
         }
         @keyframes subtlePulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.75; }
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 0.8; }
         }
-
-        /* 全屏图片查看器 */
         .image-overlay {
             display: none;
             position: fixed;
@@ -229,12 +224,12 @@
         }
         .close-btn {
             margin-top: 16px;
-            padding: 8px 26px;
+            padding: 10px 30px;
             background: rgba(255,255,255,0.2);
             color: white;
             border: 2px solid rgba(255,255,255,0.5);
             border-radius: 25px;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
             touch-action: manipulation;
             transition: background 0.2s;
@@ -257,14 +252,10 @@
             <p>祝顾老师天天开心！</p>
         </div>
     </div>
-
-    <!-- 左下角：感叹号 + 彩蛋小圆点 -->
     <div class="bottom-left-group">
         <div class="hyl-badge" id="hyl-tip">❗</div>
         <button class="easter-egg-btn" id="easter-egg-btn" title="点我"></button>
     </div>
-
-    <!-- 全屏图片查看器 -->
     <div class="image-overlay" id="image-overlay">
         <img src="https://s41.ax1x.com/2026/07/06/pmBWMSx.jpg" alt="彩蛋图片">
         <button class="close-btn" id="close-overlay">✕ 关闭</button>
@@ -281,7 +272,7 @@
 
         let allNotes = [];
         let heartContainer = null;
-        const TOTAL_NOTES = 60;
+        const TOTAL_NOTES = 30;
 
         const easterEggBtn = document.getElementById('easter-egg-btn');
         const imageOverlay = document.getElementById('image-overlay');
@@ -295,14 +286,12 @@
                 heartContainer = document.getElementById('heart-container');
                 heartContainer.style.display = 'block';
                 createHeartNotes();
-                // 动画结束后显示小彩蛋（约6.5秒）
                 setTimeout(() => {
                     easterEggBtn.classList.add('visible');
-                }, 6500);
+                }, 6000);
             }, 800);
         });
 
-        // 彩蛋按钮 → 全屏图片
         easterEggBtn.addEventListener('click', function(e){
             e.stopPropagation();
             imageOverlay.classList.add('visible');
@@ -315,7 +304,6 @@
             if(e.target === imageOverlay) imageOverlay.classList.remove('visible');
         });
 
-        // 感叹号提示
         const hylTip = document.getElementById('hyl-tip');
         let tipVisible = false;
         hylTip.addEventListener('click', function(e){
@@ -337,16 +325,15 @@
             return { x: x * scale, y: y * scale };
         }
 
-        // ✅ iPhone 11 (414×896) 上爱心完整可见，约占屏幕40%
         function getScale() {
             const sw = window.innerWidth;
             const sh = window.innerHeight;
             const minDim = Math.min(sw, sh);
-            if (minDim < 380) return 6.5;      // 小屏
-            if (minDim < 450) return 7.5;      // iPhone SE/11 竖屏
-            if (minDim < 600) return 9.0;      // iPhone 11 横屏 / 大屏手机
-            if (minDim < 800) return 10.5;
-            return 12.5;
+            if (minDim < 380) return 7.0;
+            if (minDim < 450) return 8.0;
+            if (minDim < 600) return 9.5;
+            if (minDim < 800) return 11.0;
+            return 13.0;
         }
 
         function repositionNotes() {
@@ -360,9 +347,9 @@
                 note.style.left = (centerX + x) + 'px';
                 note.style.top = (centerY + y) + 'px';
                 if (note.classList.contains('is-heart')) {
-                    note.style.transform = `rotate(${(Math.random()-0.5)*10}deg) scale(1.1)`;
+                    note.style.transform = `rotate(${(Math.random()-0.5)*10}deg) scale(1.2)`;
                 } else {
-                    note.style.transform = `rotate(${(Math.random()-0.5)*10}deg) scale(1)`;
+                    note.style.transform = `rotate(${(Math.random()-0.5)*8}deg) scale(1)`;
                 }
             });
         }
@@ -380,7 +367,7 @@
                 const note = document.createElement('div');
                 note.classList.add('note');
                 note.innerText = messages[Math.floor(Math.random() * messages.length)];
-                
+
                 const t = (Math.PI * 2 * i) / TOTAL_NOTES;
                 const { x, y } = getHeartPoint(t, scale);
                 const finalX = centerX + x;
@@ -397,13 +384,13 @@
                     note.style.left = centerX + 'px';
                     note.style.top = centerY + 'px';
                     note.style.transform = `rotate(${(Math.random()-0.5)*20}deg) scale(1)`;
-                }, 600 + i * 30);
+                }, 600 + i * 40);
 
                 setTimeout(() => {
                     note.style.left = finalX + 'px';
                     note.style.top = finalY + 'px';
-                    note.style.transform = `rotate(${(Math.random()-0.5)*10}deg) scale(1)`;
-                }, 3200 + i * 35);
+                    note.style.transform = `rotate(${(Math.random()-0.5)*6}deg) scale(1)`;
+                }, 3200 + i * 45);
 
                 note.addEventListener('click', function(e){
                     e.stopPropagation();
