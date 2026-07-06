@@ -2,226 +2,269 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 手机端视口锁定 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>致顾老师</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>致顾斐老师</title>
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --primary: #ff4d79;
+            --bg: #ffe6ea;
+            --card-bg: rgba(255,255,255,0.95);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             margin: 0; padding: 0;
-            background-color: #ffe6ea; /* 初始背景色 */
-            transition: background-color 0.6s ease;
-            overflow: hidden; /* 禁止滚动 */
-            font-family: "Microsoft YaHei", sans-serif;
-            height: 100vh; width: 100vw;
-            position: relative;
-        }
-
-        /* 容器：用于放所有的纸条 */
-        #heart-container {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 0; height: 0; /* 中心点定位 */
-            z-index: 1;
-        }
-
-        /* 小纸条样式 */
-        .paper-note {
-            position: absolute;
-            width: 90px;  /* 增大宽度 */
-            height: 50px; /* 增大高度 */
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 12px; color: #333; font-weight: bold;
-            text-align: center;
-            transition: background-color 0.6s ease, transform 0.3s;
-            cursor: pointer;
-            /* 关键：防止文字换行导致看不清 */
-            white-space: nowrap; 
+            background-color: var(--bg);
             overflow: hidden;
-            padding: 0 5px;
-            /* 确保变换原点在中心，方便计算位置 */
-            transform-origin: center center; 
+            font-family: -apple-system, "Microsoft YaHei", sans-serif;
+            height: 100vh; width: 100vw;
+            display: flex; justify-content: center; align-items: center;
+            /* 防止iOS橡皮筋效果导致布局错乱 */
+            position: fixed; top: 0; left: 0; 
         }
-
-        /* 中间的主卡片 */
-        #main-card {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 240px; /* 缩小宽度 */
-            padding: 20px 15px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            text-align: center;
-            z-index: 10; /* 保证在最上层 */
-            transition: background-color 0.6s ease, transform 0.2s;
-            border: 2px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(5px);
+        
+        /* 欢迎页优化 */
+        #welcome-screen {
+            text-align: center; position: absolute; z-index: 10;
+            transition: opacity 0.8s ease-out; padding: 20px;
+            width: 100%;
         }
-
-        #main-card h2 {
-            color: #ff4d4f; margin: 0 0 10px 0; font-size: 20px; line-height: 1.4;
-        }
-        #main-card p {
-            color: #555; margin: 0; font-size: 14px; font-weight: bold;
-        }
-
-        /* 左下角水印按钮 */
-        #watermark {
-            position: fixed; bottom: 30px; left: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 8px 15px; border-radius: 20px;
-            font-size: 12px; color: #666;
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            z-index: 20; cursor: pointer;
+        h1 { color: var(--primary); font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 15px; }
+        p.subtitle { color: #888; font-size: 1rem; margin-bottom: 40px; }
+        button {
+            padding: 16px 50px; font-size: 1.2rem;
+            background: linear-gradient(135deg, #ff4d79, #ff7eb3);
+            color: white; border: none;
+            border-radius: 50px; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 77, 121, 0.4);
+            touch-action: manipulation;
             transition: transform 0.2s;
         }
-        #watermark:active { transform: scale(0.95); }
-        .icon-alert {
-            background: #ff4d4f; color: white;
-            width: 18px; height: 18px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: bold; font-size: 12px;
+        button:active { transform: scale(0.92); }
+
+        #heart-container {
+            position: relative; width: 100%; height: 100%; display: none;
         }
 
-        /* 手机端特别适配：如果屏幕太窄，进一步缩小整体比例 */
-        @media (max-width: 480px) {
-            .paper-note { width: 75px; height: 42px; font-size: 11px; }
-            #main-card { width: 200px; padding: 15px 10px; }
-            #main-card h2 { font-size: 18px; }
+        /* 纸条样式优化 */
+        .note {
+            position: absolute; background: var(--card-bg);
+            padding: 6px 12px; font-size: 13px; color: #555;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 6px; opacity: 0; white-space: nowrap;
+            border-bottom: 3px solid #ffeff2;
+            /* 使用transform进行动画，性能更好 */
+            will-change: transform, left, top, opacity;
+            transition: all 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            touch-action: manipulation;
+            z-index: 2;
+            user-select: none;
+        }
+
+        /* 点击后的爱心状态增强 */
+        .note.is-heart {
+            background: var(--primary) !important;
+            color: white !important;
+            border-bottom-color: #d6335c !important;
+            font-size: 18px !important;
+            padding: 10px 14px !important;
+            border-radius: 50% !important;
+            box-shadow: 0 0 15px rgba(255, 77, 121, 0.6) !important;
+            animation: heartBeat 0.6s ease-in-out;
+            z-index: 10;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.4); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* 中间卡片响应式 */
+        .center-card {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: var(--card-bg); 
+            padding: 25px 35px;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            text-align: center; z-index: 5; opacity: 0;
+            animation: popIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 5s;
+            max-width: 88%; width: max-content;
+            backdrop-filter: blur(10px);
+        }
+        .center-card h2 { margin: 0; color: var(--primary); font-size: clamp(1.3rem, 4vw, 1.6rem); }
+        .center-card p { margin: 12px 0 0; color: #666; font-size: clamp(0.9rem, 3vw, 1.1rem); }
+
+        @keyframes popIn {
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* 底部标识移至右上角，避免手势条遮挡 */
+        .hyl-badge {
+            position: fixed; top: env(safe-area-inset-top, 15px); right: 15px;
+            font-size: 24px; color: rgba(0,0,0,0.2);
+            cursor: pointer; z-index: 999; user-select: none;
+            padding: 10px; line-height: 1;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            margin-top: 10px;
+        }
+        .hyl-badge.active {
+            color: var(--primary);
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            font-size: 14px;
+            padding: 8px 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
-
-    <!-- 爱心容器 -->
-    <div id="heart-container"></div>
-
-    <!-- 中间主卡片 -->
-    <div id="main-card">
-        <h2>满心欢喜，<br>皆源于您</h2>
-        <p>祝顾老师天天开心！</p>
+    <div id="welcome-screen">
+        <h1>致顾斐老师 ❤️</h1>
+        <p class="subtitle">学生：孙逸林 敬上</p>
+        <button id="start-btn">开启惊喜</button>
     </div>
-
-    <!-- 左下角水印 -->
-    <div id="watermark">
-        <div class="icon-alert">!</div>
-        <span>此网站由 HYL 制作</span>
+    
+    <div id="heart-container">
+        <div class="center-card">
+            <h2>满心欢喜，皆源于您</h2>
+            <p>祝顾老师天天开心！</p>
+        </div>
     </div>
+    
+    <div class="hyl-badge" id="hyl-tip">❗</div>
 
 <script>
-    // --- 配置区域 ---
     const messages = [
-        "桃李满天下", "Best Wishes", "Happy Day", "万事如意", 
-        "工作顺利", "身体健康", "永远年轻", "天天开心", 
-        "步步高升", "好运连连", "笑口常开", "生活美满",
-        "顾老师最棒", "心想事成", "平安喜乐", "未来可期"
+        "桃李满天下","春晖遍四方","教诲如春风","师恩深似海",
+        "身体健康","工作顺利","万事如意","笑口常开",
+        "永远年轻","美丽大方","教学有成","生活美满",
+        "Happy Day","Best Teacher","Good Luck","平安喜乐",
+        "前程似锦","岁月静好","温柔以待","心想事成"
     ];
 
-    // 配色方案（点击变色时用）
-    const themes = [
-        { bg: '#ffe6ea', card: 'rgba(255, 255, 255, 0.95)', paper: '#ffffff' }, // 初始粉白
-        { bg: '#e6f7ff', card: 'rgba(230, 247, 255, 0.95)', paper: '#f0faff' }, // 清新蓝
-        { bg: '#f9f0ff', card: 'rgba(249, 240, 255, 0.95)', paper: '#fbf5ff' }, // 梦幻紫
-        { bg: '#fffbe6', card: 'rgba(255, 251, 230, 0.95)', paper: '#fffff0' }, // 温暖黄
-        { bg: '#f6ffed', card: 'rgba(246, 255, 237, 0.95)', paper: '#fcffe6' }  // 生机绿
-    ];
-    let currentThemeIndex = 0;
+    // 兼容iOS安全区域
+    document.documentElement.style.setProperty('--sat', 'env(safe-area-inset-top)');
 
-    const container = document.getElementById('heart-container');
-    const mainCard = document.getElementById('main-card');
-    const watermark = document.getElementById('watermark');
-    
-    // 生成爱心形状的坐标点
-    function createHeart() {
-        // 清空现有内容
-        container.innerHTML = '';
-        
-        // 动态计算缩放比例：手机屏幕小，系数就小；电脑屏幕大，系数就大
-        // 这样能保证手机上纸条不会溢出屏幕
-        const isMobile = window.innerWidth < 768;
-        const scaleFactor = isMobile ? 7 : 11; 
+    document.getElementById('start-btn').addEventListener('click', function(){
+        const ws = document.getElementById('welcome-screen');
+        ws.style.opacity = '0';
+        setTimeout(()=>{
+            ws.style.display='none';
+            document.getElementById('heart-container').style.display='block';
+            createHeartNotes();
+        }, 800);
+    });
 
-        // 生成爱心轮廓的点 (t 从 0 到 2π)
-        // 增加步长密度让爱心更圆润，但为了“一张张”的效果，我们控制数量
-        const totalPapers = 36; // 纸条总数，偶数比较好对称
-        
-        for (let i = 0; i < totalPapers; i++) {
-            // 将圆分成 totalPapers 份
-            const t = (Math.PI * 2 * i) / totalPapers;
-
-            // 心形公式
-            // x = 16sin^3(t)
-            // y = 13cos(t) - 5cos(2t) - 2cos(3t) - cos(4t)
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)); // 加负号是因为网页y轴向下
-
-            // 创建纸条元素
-            const note = document.createElement('div');
-            note.className = 'paper-note';
-            
-            // 随机选取祝福语
-            note.innerText = messages[i % messages.length];
-            
-            // 设置初始颜色
-            note.style.backgroundColor = themes[0].paper;
-
-            // 计算位置并应用
-            // x * scaleFactor 是距离中心的像素距离
-            // rotate(${t * 180 / Math.PI + 90}deg) 让纸条顺着切线方向排列，看起来像围成一圈
-            note.style.left = `${x * scaleFactor}px`;
-            note.style.top = `${y * scaleFactor}px`;
-            
-            // 这里的旋转角度是为了让文字朝向圆心或者顺着圆弧
-            // +90度是为了修正初始角度偏差
-            const rotation = (t * 180 / Math.PI) + 90;
-            note.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-
-            container.appendChild(note);
+    // 标识点击逻辑优化
+    const hylTip = document.getElementById('hyl-tip');
+    let tipVisible = false;
+    hylTip.addEventListener('click', function(e){
+        e.stopPropagation(); // 防止触发其他事件
+        if(!tipVisible){
+            this.innerText="💌 H YL 制作";
+            this.classList.add('active');
+            tipVisible=true;
+        } else {
+            this.innerText="❗";
+            this.classList.remove('active');
+            tipVisible=false;
         }
+    });
+
+    function createHeartNotes(){
+        const container = document.getElementById('heart-container');
+        const totalNotes = window.innerWidth < 400 ? 60 : 90; // 小屏减少数量提升性能
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        // 📱 核心改进：根据屏幕宽高比动态计算缩放
+        const sw = window.innerWidth;
+        const sh = window.innerHeight;
+        let scale;
+        
+        if (sw < 400) {
+            scale = Math.min(sw, sh) / 28; // 极小屏
+        } else if (sw < 500) {
+            scale = Math.min(sw, sh) / 24; // 普通手机竖屏
+        } else if (sw < 800) {
+            scale = Math.min(sw, sh) / 22; // 大手机/小平板
+        } else {
+            scale = Math.min(sw, sh) / 20; // 桌面端
+        }
+
+        // 预计算随机值，避免重排
+        const fragments = document.createDocumentFragment();
+
+        for(let i=0; i<totalNotes; i++){
+            const note = document.createElement('div');
+            note.classList.add('note');
+            note.innerText = messages[Math.floor(Math.random()*messages.length)];
+
+            const t = (Math.PI * 2 * i) / totalNotes;
+            // 心形参数方程
+            const targetX = 16 * Math.pow(Math.sin(t), 3);
+            const targetY = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+            
+            const finalX = centerX + targetX * scale;
+            const finalY = centerY + targetY * scale;
+
+            // 初始位置：从屏幕四周飞入而非随机散落
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.max(sw, sh);
+            note.style.left = (centerX + Math.cos(angle) * radius) + 'px';
+            note.style.top = (centerY + Math.sin(angle) * radius) + 'px';
+            note.style.transform = `rotate(${(Math.random()-0.5)*40}deg) scale(0.5)`;
+            
+            fragments.appendChild(note);
+
+            // 阶段二：飞向中心聚集
+            setTimeout(()=>{
+                note.style.opacity = '1';
+                note.style.left = centerX + 'px';
+                note.style.top = centerY + 'px';
+                note.style.transform = `rotate(${(Math.random()-0.5)*15}deg) scale(0.9)`;
+            }, 500 + i*20);
+
+            // 阶段三：散开成爱心
+            setTimeout(()=>{
+                note.style.left = finalX + 'px';
+                note.style.top = finalY + 'px';
+                // 减小最终旋转角度，保证手机端可读性
+                note.style.transform = `rotate(${(Math.random()-0.5)*8}deg) scale(1)`;
+            }, 2800 + i*25);
+
+            // 点击交互
+            note.addEventListener('click', function(e){
+                e.stopPropagation();
+                if(!this.classList.contains('is-heart')){
+                    this.classList.add('is-heart');
+                    this.innerText = '❤️';
+                    
+                    // 触觉反馈（仅安卓支持）
+                    if(navigator.vibrate) navigator.vibrate(30);
+                }
+            });
+        }
+        
+        container.appendChild(fragments);
     }
 
-    // 初始化
-    createHeart();
-
-    // 窗口大小改变时重新计算（防止横竖屏切换后布局乱了）
-    window.addEventListener('resize', createHeart);
-
-    // --- 交互逻辑 ---
-
-    // 点击左下角水印：整体变色
-    watermark.addEventListener('click', () => {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        const theme = themes[currentThemeIndex];
-
-        // 1. 变背景
-        document.body.style.backgroundColor = theme.bg;
-        
-        // 2. 变中间卡片
-        mainCard.style.backgroundColor = theme.card;
-        
-        // 3. 变所有小纸条
-        const papers = document.querySelectorAll('.paper-note');
-        papers.forEach(paper => {
-            paper.style.backgroundColor = theme.paper;
-        });
+    // 窗口大小改变时重新计算（防抖）
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const container = document.getElementById('heart-container');
+            if(container.style.display === 'block') {
+                container.innerHTML = '<div class="center-card"><h2>满心欢喜，皆源于您</h2><p>祝顾老师天天开心！</p></div>';
+                createHeartNotes();
+            }
+        }, 300);
     });
-
-    // 点击中间卡片：单独给卡片换个强调色（可选，增加趣味性）
-    mainCard.addEventListener('click', () => {
-        // 这里可以做一个简单的点击反馈动画
-        mainCard.style.transform = 'translate(-50%, -50%) scale(0.95)';
-        setTimeout(() => {
-            mainCard.style.transform = 'translate(-50%, -50%) scale(1)';
-        }, 150);
-    });
-
 </script>
 </body>
 </html>
